@@ -1,0 +1,4 @@
+package: github.com/ayumu83s/orm-resarch
+import:
+- package: github.com/go-xorm/xorm
+  version: ^0.6.2

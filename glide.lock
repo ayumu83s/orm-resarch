@@ -1,0 +1,10 @@
+hash: f89d26c5e9a3a81dbc1116fb05685c67d131b1795965addf23f354e81c1b2276
+updated: 2017-07-16T16:55:15.907520158+09:00
+imports:
+- name: github.com/go-xorm/builder
+  version: c8871c857d2555fbfbd8524f895be5386d3d8836
+- name: github.com/go-xorm/core
+  version: e9b7412d750de4920b1c7b3ede5a98fd76d38308
+- name: github.com/go-xorm/xorm
+  version: 3c8314e91603f0bfa6a228c1a0fea8a9e298f6d9
+testImports: []
