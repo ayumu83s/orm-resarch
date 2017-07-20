@@ -29,6 +29,19 @@ func Sample(db *xorm.Engine) {
 	count(db, 0)
 	count2(db, 1)
 	//count3(db, 2)
+
+	search(db, 1)
+	search(db, 0)
+	search2(db, 1)
+	search2(db, 0)
+	search3(db, 1)
+	search3(db, 0)
+	search4(db, 1)
+	search4(db, 0)
+	search5(db, 1)
+	search5(db, 0)
+	search6(db, 1)
+	search6(db, 0)
 }
 
 // ID指定で1件引くヤツ
@@ -114,4 +127,115 @@ func count3(db *xorm.Engine, actorID int) {
 		fmt.Println(err)
 	}
 	fmt.Printf("count3: %d\n", counts)
+}
+
+// 複数のレコード取得
+func search(db *xorm.Engine, actorID int) {
+	// SELECT * FROM film_actor WHERE actor_id = ?
+	// Where指定するとactorsが初期値でもwhere句が付く
+	var actors = []structs.FilmActor{}
+	err := db.Table("film_actor").Where("actor_id = ?", actorID).Find(&actors)
+	if err != nil {
+		fmt.Println(err)
+	}
+	var count int
+	for _, v := range actors {
+		count++
+		fmt.Printf("search: %+v\n", v)
+	}
+	fmt.Printf("search: %d\n", count)
+}
+
+// 複数のレコード取得2
+func search2(db *xorm.Engine, actorID int) {
+	// これも条件指定が漏れると全件検索するので危険
+	var actor = structs.FilmActor{
+		ActorId: actorID,
+	}
+	var count int
+	// SELECT * FROM film_actor WHERE actor_id = ?
+	err := db.Iterate(&actor, func(idx int, bean interface{}) error {
+		//actor := bean.(*structs.FilmActor)
+		count++
+		//fmt.Printf("search2: %+v\n", v)
+		return nil
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("search2: %d\n", count)
+}
+
+// 複数のレコード取得3
+func search3(db *xorm.Engine, actorID int) {
+	// Where設定すれば漏れはない
+	// actorで条件指定するとand条件に変わる。whereとマッピング用の構造体はどっちかにした方が良さそう
+	//SELECT * FROM film_actor WHERE actor_id = ? AND actor_id = ?
+	var actor = structs.FilmActor{}
+	var count int
+	err := db.Where("actor_id = ?", actorID).Iterate(&actor, func(idx int, bean interface{}) error {
+		//actor := bean.(*structs.FilmActor)
+		count++
+		//fmt.Printf("search2: %+v\n", v)
+		return nil
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("search3: %d\n", count)
+}
+
+// 複数のレコード取得4
+func search4(db *xorm.Engine, actorID int) {
+	var filmActors = []structs.FilmActor{}
+	sql := fmt.Sprintf("SELECT * FROM film_actor WHERE actor_id = %d", actorID)
+
+	// SELECT * FROM film_actor WHERE actor_id = ?
+	// Getはhas, errを返すけど、Findはerrだけ
+	err := db.Sql(sql).Find(&filmActors)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for _, v := range filmActors {
+		fmt.Printf("search4: %+v\n", v)
+	}
+}
+
+// rowsを使ってみる版
+func search5(db *xorm.Engine, actorID int) {
+	var actor = structs.FilmActor{}
+	var count int
+	rows, err := db.Where("actor_id = ?", actorID).Rows(&actor)
+	defer rows.Close()
+	if err != nil {
+		fmt.Println(err)
+	}
+	for rows.Next() {
+		bean := new(structs.FilmActor)
+		err = rows.Scan(bean)
+		fmt.Printf("search5: %+v\n", bean)
+		count++
+	}
+	fmt.Printf("search5: %d\n", count)
+}
+
+// SQL指定でRowsを使う版
+// 一度に大量のレコードを引くときは、メモリ消費をおさえられるのかも。
+func search6(db *xorm.Engine, actorID int) {
+	var filmActor = structs.FilmActor{}
+	sql := fmt.Sprintf("SELECT * FROM film_actor WHERE actor_id = %d", actorID)
+	var count int
+
+	rows, err := db.Sql(sql).Rows(&filmActor)
+	defer rows.Close()
+	if err != nil {
+		fmt.Println(err)
+	}
+	for rows.Next() {
+		bean := new(structs.FilmActor)
+		err = rows.Scan(bean)
+		fmt.Printf("search6: %+v\n", bean)
+		count++
+	}
+	fmt.Printf("search6: %d\n", count)
 }
