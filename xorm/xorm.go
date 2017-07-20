@@ -24,6 +24,11 @@ func Sample(db *xorm.Engine) {
 	selectOne(db, 1)
 	selectOne2(db, 0)
 	selectOne3(db, 3)
+
+	count(db, 1)
+	count(db, 0)
+	count2(db, 1)
+	//count3(db, 2)
 }
 
 // ID指定で1件引くヤツ
@@ -70,4 +75,43 @@ func selectOne3(db *xorm.Engine, id int) {
 	if has {
 		fmt.Printf("selectOne3: %+v\n", actor)
 	}
+}
+
+// 件数をカウントする
+func count(db *xorm.Engine, actorID int) {
+	// SELECT count(*) FROM film_actor WHERE actor_id = ?
+	// ただし、actorIDが0だと構造体の初期値と一緒だからか
+	// SELECT count(*) FROM film_actor とかいう地獄のSQLを発行するのでマジ危険
+	var filmActor = structs.FilmActor{
+		ActorId: actorID,
+	}
+	counts, err := db.Count(&filmActor)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("count: %d\n", counts)
+}
+
+// 件数をカウントする2
+func count2(db *xorm.Engine, actorID int) {
+	// SQL指定で結果をマッピングする
+	sql := fmt.Sprintf("SELECT count(*) FROM film_actor WHERE actor_id = %d", actorID)
+	var counts int64
+	_, err := db.Sql(sql).Get(&counts)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("count2: %d\n", counts)
+}
+
+// 件数をカウントする3
+func count3(db *xorm.Engine, actorID int) {
+	// これはエラーになる
+	// Countには対応する構造体にしか渡せない
+	var counts int64
+	_, err := db.Table("film_actor").Where("actor_id = ?", actorID).Count(&counts)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("count3: %d\n", counts)
 }

@@ -22,3 +22,9 @@ type DataSource struct {
 	User     string
 	Password string
 }
+
+type FilmActor struct {
+	ActorId    int
+	FilmId     int
+	LastUpdate time.Time
+}
