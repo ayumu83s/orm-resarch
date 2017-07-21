@@ -28,3 +28,10 @@ type FilmActor struct {
 	FilmId     int
 	LastUpdate time.Time
 }
+
+// type FilmActorDetail struct {
+// 	FilmActor `xorm:"extends"`
+// 	//FilmActor
+// 	FirstName string
+// 	LastName  string
+// }

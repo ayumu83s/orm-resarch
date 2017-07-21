@@ -42,6 +42,9 @@ func Sample(db *xorm.Engine) {
 	search5(db, 0)
 	search6(db, 1)
 	search6(db, 0)
+
+	//joinSearch(db, 1)
+	joinSearch2(db, 1)
 }
 
 // ID指定で1件引くヤツ
@@ -238,4 +241,71 @@ func search6(db *xorm.Engine, actorID int) {
 		count++
 	}
 	fmt.Printf("search6: %d\n", count)
+}
+
+// 他のテーブルjoinして検索
+func joinSearch(db *xorm.Engine, actorID int) {
+	type FilmActorDetail struct {
+		structs.FilmActor `xorm:"extends"` // tagがないとマッピングできない
+		//structs.FilmActor
+		FirstName string
+		LastName  string
+	}
+	var filmActorDetail = []FilmActorDetail{}
+	err := db.Table("film_actor").
+		Select("film_actor.*, actor.first_name, actor.last_name").
+		Join("INNER", "actor", "film_actor.actor_id = actor.actor_id").
+		Where("film_actor.actor_id = ?", actorID).
+		Find(&filmActorDetail)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	var count int
+	for _, v := range filmActorDetail {
+		count++
+		fmt.Printf("joinSearch: %+v\n", v)
+		// fmt.Printf("FilmId: %d\n", v.FilmId)
+		// fmt.Printf("ActorId: %d\n", v.ActorId)
+		// fmt.Printf("FirstName: %s\n", v.FirstName)
+		fmt.Println("----")
+	}
+	fmt.Printf("joinSearch: %d\n", count)
+}
+
+// 他のテーブルjoinして検索2
+func joinSearch2(db *xorm.Engine, actorID int) {
+	type FilmActorDetail struct {
+		structs.FilmActor `xorm:"extends"` // tagがないとマッピングできない
+		//structs.FilmActor
+		ActorFirstName string // 別名でも規則さえあえばマッピングできる
+		ActorLastName  string
+	}
+	var filmActorDetail = []FilmActorDetail{}
+	sql := fmt.Sprintf(`
+		SELECT
+			film_actor.*, actor.first_name AS actor_first_name, actor.last_name AS actor_last_name
+		FROM film_actor
+		INNER JOIN actor ON (
+			film_actor.actor_id = actor.actor_id
+		)
+		WHERE
+			film_actor.actor_id = %d
+	`, actorID)
+
+	err := db.Sql(sql).Find(&filmActorDetail)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	var count int
+	for _, v := range filmActorDetail {
+		count++
+		fmt.Printf("joinSearch: %+v\n", v)
+		// fmt.Printf("FilmId: %d\n", v.FilmId)
+		// fmt.Printf("ActorId: %d\n", v.ActorId)
+		// fmt.Printf("FirstName: %s\n", v.FirstName)
+		fmt.Println("----")
+	}
+	fmt.Printf("joinSearch: %d\n", count)
 }
