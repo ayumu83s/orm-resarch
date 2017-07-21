@@ -29,6 +29,19 @@ type FilmActor struct {
 	LastUpdate time.Time
 }
 
+type FilmText struct {
+	FilmId      int
+	Title       string
+	Description string
+}
+
+type City struct {
+	CityID     int
+	City       string
+	CountryID  string
+	LastUpdate time.Time
+}
+
 // type FilmActorDetail struct {
 // 	FilmActor `xorm:"extends"`
 // 	//FilmActor

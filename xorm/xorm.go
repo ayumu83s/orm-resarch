@@ -45,6 +45,11 @@ func Sample(db *xorm.Engine) {
 
 	//joinSearch(db, 1)
 	joinSearch2(db, 1)
+
+	//update(db, 1, "ACADEMY DINOSAUR2")
+	//update2(db, 1, "ACADEMY DINOSAUR2")
+	//update3(db, 1, "ACADEMY DINOSAUR2")
+	update4(db, 1, "A Corua (La Corua)2")
 }
 
 // ID指定で1件引くヤツ
@@ -308,4 +313,59 @@ func joinSearch2(db *xorm.Engine, actorID int) {
 		fmt.Println("----")
 	}
 	fmt.Printf("joinSearch: %d\n", count)
+}
+
+// timeoutする…
+// Error 1205: Lock wait timeout exceeded; try restarting transaction
+// film_listも更新しようとしている？？
+func update(db *xorm.Engine, filmID int, title string) {
+	var fileText = structs.FilmText{
+		Title: title,
+	}
+	// UPDATE film_text SET title = "title" WHERE film_id = 1
+	affected, err := db.Where("film_id = ?", filmID).Update(&fileText)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("update: %d\n", affected)
+}
+
+// timeoutする…
+func update2(db *xorm.Engine, filmID int, title string) {
+	// UPDATE film_text SET title = "title" WHERE film_id = 1
+	affected, err := db.Exec(
+		"UPDATE film_text SET title = ? WHERE film_id = ?",
+		title, filmID,
+	)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("update: %d\n", affected)
+}
+
+// timeoutする…
+func update3(db *xorm.Engine, filmID int, title string) {
+	// UPDATE film_text SET title = "title" WHERE film_id = 1
+	sql := fmt.Sprintf(`
+		UPDATE film_text SET title = "%s" WHERE film_id = %d
+		`, title, filmID,
+	)
+	results, err := db.Query(sql)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("update: %d\n", results)
+}
+
+// リレーションがなければサクッと完了
+func update4(db *xorm.Engine, cityID int, cityName string) {
+	var city = structs.City{
+		City: cityName,
+	}
+	// UPDATE city SET city = "cityName" WHERE city_id = 1
+	affected, err := db.Where("city_id = ?", cityID).Update(&city)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("update4: %d\n", affected)
 }
