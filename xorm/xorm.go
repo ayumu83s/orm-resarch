@@ -50,6 +50,8 @@ func Sample(db *xorm.Engine) {
 	//update2(db, 1, "ACADEMY DINOSAUR2")
 	//update3(db, 1, "ACADEMY DINOSAUR2")
 	update4(db, 1, "A Corua (La Corua)2")
+
+	updateWithTx(db)
 }
 
 // ID指定で1件引くヤツ
@@ -368,4 +370,23 @@ func update4(db *xorm.Engine, cityID int, cityName string) {
 		fmt.Println(err)
 	}
 	fmt.Printf("update4: %d\n", affected)
+}
+
+func updateWithTx(db *xorm.Engine) {
+	session := db.NewSession()
+	session.Begin()
+
+	var city = structs.City{
+		City: "hoge",
+	}
+	_, err := db.Where("city_id = ?", 1).Update(&city)
+	if err != nil {
+		session.Rollback()
+		return
+	}
+	_, err = db.Where("city_id = ?", 2).Update(&city)
+	if err != nil {
+		session.Rollback()
+	}
+	session.Commit()
 }
