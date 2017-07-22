@@ -56,7 +56,7 @@ func Sample(db *xorm.Engine) {
 
 // ID指定で1件引くヤツ
 func selectOne(db *xorm.Engine, id int) {
-	var actor = structs.Actor{
+	var actor = Actor{
 		ActorId: id,
 	}
 	// SELECT * FROM actor WHERE actor_id = ? LIMIT 1
@@ -75,7 +75,7 @@ func selectOne(db *xorm.Engine, id int) {
 func selectOne2(db *xorm.Engine, id int) {
 	// SELECT * FROM actor WHERE actor_id = ? LIMIT 1
 	// これなら0が来てもちゃんとwhere句つかってくれる
-	var actor = structs.Actor{}
+	var actor = Actor{}
 	has, err := db.Table("actor").Where("actor_id = ?", id).Get(&actor)
 	if err != nil {
 		fmt.Println(err)
@@ -89,7 +89,7 @@ func selectOne2(db *xorm.Engine, id int) {
 func selectOne3(db *xorm.Engine, id int) {
 	// SQL指定で結果を構造体にマッピングする
 	// これこれ。こういうのでいいんだよ。
-	var actor = structs.Actor{}
+	var actor = Actor{}
 	sql := fmt.Sprintf("SELECT * FROM actor WHERE actor_id = %d", id)
 	has, err := db.Sql(sql).Get(&actor)
 	if err != nil {
@@ -105,7 +105,7 @@ func count(db *xorm.Engine, actorID int) {
 	// SELECT count(*) FROM film_actor WHERE actor_id = ?
 	// ただし、actorIDが0だと構造体の初期値と一緒だからか
 	// SELECT count(*) FROM film_actor とかいう地獄のSQLを発行するのでマジ危険
-	var filmActor = structs.FilmActor{
+	var filmActor = FilmActor{
 		ActorId: actorID,
 	}
 	counts, err := db.Count(&filmActor)
@@ -143,7 +143,7 @@ func count3(db *xorm.Engine, actorID int) {
 func search(db *xorm.Engine, actorID int) {
 	// SELECT * FROM film_actor WHERE actor_id = ?
 	// Where指定するとactorsが初期値でもwhere句が付く
-	var actors = []structs.FilmActor{}
+	var actors = []FilmActor{}
 	err := db.Table("film_actor").Where("actor_id = ?", actorID).Find(&actors)
 	if err != nil {
 		fmt.Println(err)
@@ -159,7 +159,7 @@ func search(db *xorm.Engine, actorID int) {
 // 複数のレコード取得2
 func search2(db *xorm.Engine, actorID int) {
 	// これも条件指定が漏れると全件検索するので危険
-	var actor = structs.FilmActor{
+	var actor = FilmActor{
 		ActorId: actorID,
 	}
 	var count int
@@ -181,7 +181,7 @@ func search3(db *xorm.Engine, actorID int) {
 	// Where設定すれば漏れはない
 	// actorで条件指定するとand条件に変わる。whereとマッピング用の構造体はどっちかにした方が良さそう
 	//SELECT * FROM film_actor WHERE actor_id = ? AND actor_id = ?
-	var actor = structs.FilmActor{}
+	var actor = FilmActor{}
 	var count int
 	err := db.Where("actor_id = ?", actorID).Iterate(&actor, func(idx int, bean interface{}) error {
 		//actor := bean.(*structs.FilmActor)
@@ -197,7 +197,7 @@ func search3(db *xorm.Engine, actorID int) {
 
 // 複数のレコード取得4
 func search4(db *xorm.Engine, actorID int) {
-	var filmActors = []structs.FilmActor{}
+	var filmActors = []FilmActor{}
 	sql := fmt.Sprintf("SELECT * FROM film_actor WHERE actor_id = %d", actorID)
 
 	// SELECT * FROM film_actor WHERE actor_id = ?
@@ -213,7 +213,7 @@ func search4(db *xorm.Engine, actorID int) {
 
 // rowsを使ってみる版
 func search5(db *xorm.Engine, actorID int) {
-	var actor = structs.FilmActor{}
+	var actor = FilmActor{}
 	var count int
 	rows, err := db.Where("actor_id = ?", actorID).Rows(&actor)
 	defer rows.Close()
@@ -221,7 +221,7 @@ func search5(db *xorm.Engine, actorID int) {
 		fmt.Println(err)
 	}
 	for rows.Next() {
-		bean := new(structs.FilmActor)
+		bean := new(FilmActor)
 		err = rows.Scan(bean)
 		fmt.Printf("search5: %+v\n", bean)
 		count++
@@ -232,7 +232,7 @@ func search5(db *xorm.Engine, actorID int) {
 // SQL指定でRowsを使う版
 // 一度に大量のレコードを引くときは、メモリ消費をおさえられるのかも。
 func search6(db *xorm.Engine, actorID int) {
-	var filmActor = structs.FilmActor{}
+	var filmActor = FilmActor{}
 	sql := fmt.Sprintf("SELECT * FROM film_actor WHERE actor_id = %d", actorID)
 	var count int
 
@@ -242,7 +242,7 @@ func search6(db *xorm.Engine, actorID int) {
 		fmt.Println(err)
 	}
 	for rows.Next() {
-		bean := new(structs.FilmActor)
+		bean := new(FilmActor)
 		err = rows.Scan(bean)
 		fmt.Printf("search6: %+v\n", bean)
 		count++
@@ -253,8 +253,8 @@ func search6(db *xorm.Engine, actorID int) {
 // 他のテーブルjoinして検索
 func joinSearch(db *xorm.Engine, actorID int) {
 	type FilmActorDetail struct {
-		structs.FilmActor `xorm:"extends"` // tagがないとマッピングできない
-		//structs.FilmActor
+		FilmActor `xorm:"extends"` // tagがないとマッピングできない
+		//FilmActor
 		FirstName string
 		LastName  string
 	}
@@ -283,8 +283,8 @@ func joinSearch(db *xorm.Engine, actorID int) {
 // 他のテーブルjoinして検索2
 func joinSearch2(db *xorm.Engine, actorID int) {
 	type FilmActorDetail struct {
-		structs.FilmActor `xorm:"extends"` // tagがないとマッピングできない
-		//structs.FilmActor
+		FilmActor `xorm:"extends"` // tagがないとマッピングできない
+		//FilmActor
 		ActorFirstName string // 別名でも規則さえあえばマッピングできる
 		ActorLastName  string
 	}
@@ -321,7 +321,7 @@ func joinSearch2(db *xorm.Engine, actorID int) {
 // Error 1205: Lock wait timeout exceeded; try restarting transaction
 // film_listも更新しようとしている？？
 func update(db *xorm.Engine, filmID int, title string) {
-	var fileText = structs.FilmText{
+	var fileText = FilmText{
 		Title: title,
 	}
 	// UPDATE film_text SET title = "title" WHERE film_id = 1
@@ -361,7 +361,7 @@ func update3(db *xorm.Engine, filmID int, title string) {
 
 // リレーションがなければサクッと完了
 func update4(db *xorm.Engine, cityID int, cityName string) {
-	var city = structs.City{
+	var city = City{
 		City: cityName,
 	}
 	// UPDATE city SET city = "cityName" WHERE city_id = 1
@@ -376,7 +376,7 @@ func updateWithTx(db *xorm.Engine) {
 	session := db.NewSession()
 	session.Begin()
 
-	var city = structs.City{
+	var city = City{
 		City: "hoge",
 	}
 	_, err := db.Where("city_id = ?", 1).Update(&city)
