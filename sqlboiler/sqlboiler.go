@@ -26,6 +26,9 @@ func Sample(db *sql.DB) {
 	selectOne(db, 1)
 	selectOne2(db, 2)
 	selectOne3(db, 3)
+
+	count()
+	count_by_first_name()
 }
 
 // ID指定で1件引くヤツ
@@ -58,4 +61,24 @@ func selectOne3(db *sql.DB, id int) {
 		fmt.Println(err)
 	}
 	fmt.Printf("selectOne3: %+v\n", actor)
+}
+
+// 条件指定しないcount
+func count() {
+	// SELECT COUNT(*) FROM `actor`;
+	count, err := ActorsG().Count()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("count: %d\n", count)
+}
+
+// 条件指定のcount
+func count_by_first_name() {
+	// SELECT COUNT(*) FROM `actor` WHERE (first_name LIKE ?);
+	count, err := ActorsG(Where("first_name LIKE ?", "JO%")).Count()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("count: %d\n", count)
 }
