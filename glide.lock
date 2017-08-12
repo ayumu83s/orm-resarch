@@ -1,8 +1,8 @@
-hash: a976d803373547124cfe7ce8366469209e8a60efb474750ab385e681ef543186
-updated: 2017-07-25T09:20:18.966462497+09:00
+hash: 757d332ef1fa0b6d8bdc5dd70bd9614d47e4f33504b0995573b3ae64abfb00dd
+updated: 2017-08-12T15:09:25.213643509+09:00
 imports:
 - name: github.com/denisenkom/go-mssqldb
-  version: 83fd6889092585661b9359ccb07795f09349ad3a
+  version: 84dc5e6cc4a674abe81be5bf7835f4ae3dced817
 - name: github.com/go-sql-driver/mysql
   version: 3955978caca48c1658a4bb7a9c6a0f084e326af3
 - name: github.com/go-xorm/builder
@@ -12,7 +12,7 @@ imports:
 - name: github.com/go-xorm/xorm
   version: 3c8314e91603f0bfa6a228c1a0fea8a9e298f6d9
 - name: github.com/lib/pq
-  version: dd1fe2071026ce53f36a39112e645b4d4f5793a4
+  version: e42267488fe361b9dc034be7a6bffef5b195bceb
   subpackages:
   - oid
 - name: github.com/nullbio/inflect
@@ -32,12 +32,21 @@ imports:
   - randomize
   - strmangle
   - types
+- name: github.com/volatiletech/inflect
+  version: e7201282ae8da26cd97aed2e516f75c0bd91bb93
+- name: github.com/volatiletech/sqlboiler
+  version: 86c580f53724a794e2f807707653f480616d455d
+  subpackages:
+  - boil
+  - queries
+  - queries/qm
+  - strmangle
 - name: golang.org/x/crypto
-  version: 6914964337150723782436d56b3f21610a74ce7b
+  version: b176d7def5d71bdd214203491f89843ed217f420
   subpackages:
   - md4
 - name: golang.org/x/net
-  version: ab5485076ff3407ad2d02db054635913f017b0ed
+  version: 1c05540f6879653db88113bc4a2b70aec4bd491f
   subpackages:
   - context
 - name: gopkg.in/nullbio/null.v6
@@ -79,11 +88,11 @@ testImports:
 - name: github.com/spf13/viper
   version: 25b30aa063fc18e48662b86996252eabdcf2f0c7
 - name: golang.org/x/sys
-  version: c4489faa6e5ab84c0ef40d6ee878f7a030281f0f
+  version: e42485b6e20ae7d2304ec72e535b103ed350cc02
   subpackages:
   - unix
 - name: golang.org/x/text
-  version: 836efe42bb4aa16aaa17b9c155d8813d336ed720
+  version: b19bf474d317b857955b12035d2c5acb57ce8b01
   subpackages:
   - transform
   - unicode/norm
