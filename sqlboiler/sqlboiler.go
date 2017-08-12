@@ -25,6 +25,7 @@ func New(ds *structs.DataSource) (*sql.DB, error) {
 func Sample(db *sql.DB) {
 	selectOne(db, 1)
 	selectOne2(db, 2)
+	selectOne3(db, 3)
 }
 
 // ID指定で1件引くヤツ
@@ -46,4 +47,15 @@ func selectOne2(db *sql.DB, id int) {
 		fmt.Println(err)
 	}
 	fmt.Printf("selectOne2: %+v\n", actor)
+}
+
+// ID指定で1件引くヤツ
+func selectOne3(db *sql.DB, id int) {
+	// SELECT * FROM `actor` WHERE actor_id=?
+	// boil.SetDB(db)のDBを利用する
+	actor, err := ActorsG(SQL("SELECT * FROM `actor` WHERE actor_id=?", id)).One()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("selectOne3: %+v\n", actor)
 }
