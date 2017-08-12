@@ -3,6 +3,7 @@ package sqlboiler
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/ayumu83s/orm-resarch/structs"
 	_ "github.com/go-sql-driver/mysql"
@@ -31,6 +32,10 @@ func Sample(db *sql.DB) {
 	countByFirstName()
 	searchFilmActorByActorID(1)
 	searchFilmActorByActorID2(2)
+
+	//searchFilmActorByActorIDWithActor(1)
+	//searchFilmActorByActorIDWithActor2(1)
+	searchFilmActorByActorIDWithActor3(2)
 }
 
 // ID指定で1件引くヤツ
@@ -104,5 +109,108 @@ func searchFilmActorByActorID2(id int) {
 	}
 	for _, v := range filmActors {
 		fmt.Printf("searchFilmActorByActorID: %+v\n", v)
+	}
+}
+
+// joinするやつ
+func searchFilmActorByActorIDWithActor(id int) {
+	type FilmActorsWithActor struct {
+		FilmActor `boil:",bind"`
+		Actor     `boil:",bind"`
+	}
+
+	var filmActorsWithActors []FilmActorsWithActor
+	// SELECT film_actor.*, actor.* FROM `film_actor` INNER JOIN actor ON (film_actor.actor_id = actor.actor_id) WHERE (film_actor.actor_id = ?);
+	err := NewQueryG(
+		Select("film_actor.*, actor.*"),
+		From("film_actor"),
+		InnerJoin("actor ON (film_actor.actor_id = actor.actor_id)"),
+		Where("film_actor.actor_id = ?", id),
+	).Bind(&filmActorsWithActors)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for _, v := range filmActorsWithActors {
+		fmt.Printf("searchFilmActorByActorIDWithActor: %+v\n", v)
+	}
+}
+
+// joinするやつ
+// うごくけど、構造体の再定義がひたすらダルい
+func searchFilmActorByActorIDWithActor2(id int) {
+	type FilmActorsWithActor2 struct {
+		ActorID    uint16
+		FilmID     uint16
+		LastUpdate time.Time
+		FirstName  string
+		LastName   string
+		FilmTitle  string
+	}
+
+	var filmActorsWithActors []FilmActorsWithActor2
+	err := NewQueryG(
+		SQL(`
+			SELECT
+				film_actor.actor_id AS actor_id,
+				film_actor.film_id AS film_id,
+				film_actor.last_update AS last_update,
+				actor.first_name AS first_name,
+				actor.last_name AS last_name,
+				film.title AS film_title
+			FROM film_actor 
+			INNER JOIN actor ON (
+				film_actor.actor_id = actor.actor_id
+			)
+			INNER JOIN film ON (
+				film_actor.film_id = film.film_id
+			)
+			WHERE film_actor.actor_id=?
+		`, id),
+	).Bind(&filmActorsWithActors)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for _, v := range filmActorsWithActors {
+		fmt.Printf("searchFilmActorByActorIDWithActor: %+v\n", v)
+	}
+}
+
+// joinするやつ
+// このあたりが落とし所な感じ
+func searchFilmActorByActorIDWithActor3(id int) {
+	type FilmActorsWithActor3 struct {
+		FilmActor `boil:",bind"`
+		Actor     `boil:",bind"`
+		Film      `boil:",bind"`
+	}
+
+	var filmActorsWithActors []FilmActorsWithActor3
+	err := NewQueryG(
+		SQL(`
+			SELECT
+				film_actor.*,
+				actor.*,
+				film.*
+			FROM film_actor 
+			INNER JOIN actor ON (
+				film_actor.actor_id = actor.actor_id
+			)
+			INNER JOIN film ON (
+				film_actor.film_id = film.film_id
+			)
+			WHERE film_actor.actor_id=?
+		`, id),
+	).Bind(&filmActorsWithActors)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for _, v := range filmActorsWithActors {
+		fmt.Printf(
+			"actor_id:%d, actor_name:%s, film_id:%d, film_title:%s\n",
+			v.FilmActor.ActorID,
+			v.Actor.FirstName,
+			v.FilmActor.FilmID,
+			v.Film.Title,
+		)
 	}
 }
