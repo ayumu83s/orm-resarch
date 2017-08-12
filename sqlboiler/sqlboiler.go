@@ -28,7 +28,9 @@ func Sample(db *sql.DB) {
 	selectOne3(db, 3)
 
 	count()
-	count_by_first_name()
+	countByFirstName()
+	searchFilmActorByActorID(1)
+	searchFilmActorByActorID2(2)
 }
 
 // ID指定で1件引くヤツ
@@ -74,11 +76,33 @@ func count() {
 }
 
 // 条件指定のcount
-func count_by_first_name() {
+func countByFirstName() {
 	// SELECT COUNT(*) FROM `actor` WHERE (first_name LIKE ?);
 	count, err := ActorsG(Where("first_name LIKE ?", "JO%")).Count()
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Printf("count: %d\n", count)
+}
+
+func searchFilmActorByActorID(id int) {
+	// SELECT * FROM `film_actor` WHERE (actor_id=?);
+	filmActors, err := FilmActorsG(Where("actor_id=?", id)).All()
+	if err != nil {
+		fmt.Println(err)
+	}
+	for _, v := range filmActors {
+		fmt.Printf("searchFilmActorByActorID: %+v\n", v)
+	}
+}
+
+func searchFilmActorByActorID2(id int) {
+	// SELECT film_id, last_update FROM `film_actor` WHERE actor_id=?
+	filmActors, err := FilmActorsG(SQL("SELECT film_id, last_update FROM `film_actor` WHERE actor_id=?", id)).All()
+	if err != nil {
+		fmt.Println(err)
+	}
+	for _, v := range filmActors {
+		fmt.Printf("searchFilmActorByActorID: %+v\n", v)
+	}
 }
