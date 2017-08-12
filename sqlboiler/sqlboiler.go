@@ -17,6 +17,7 @@ func New(ds *structs.DataSource) (*sql.DB, error) {
 
 	db, err := sql.Open("mysql", dataSourceName)
 	boil.SetDB(db)
+	boil.DebugMode = true
 	return db, err
 }
 
@@ -26,6 +27,7 @@ func Sample(db *sql.DB) {
 
 // ID指定で1件引くヤツ
 func selectOne(db *sql.DB, id int) {
+	// select * from `actor` where `actor_id`=?
 	actor, err := FindActorG(1)
 	if err != nil {
 		fmt.Println(err)

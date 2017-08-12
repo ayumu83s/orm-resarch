@@ -24,6 +24,9 @@ CRUD
 
 	parseTime=trueで接続しないとエラーでる。
 	sqlboiler: unable to select from actor: failed to bind pointers to obj: sql: Scan error on column index 3: unsupported Scan, storing driver.Value type []uint8 into type *time.Time
+
+	boil.DebugMode = true
+	発行したクエリを確認できる
 ## gorp
 ## gorm
 ## genmai
