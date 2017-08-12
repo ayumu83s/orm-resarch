@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
+	"github.com/ayumu83s/orm-resarch/sqlboiler"
 	"github.com/ayumu83s/orm-resarch/structs"
-	"github.com/ayumu83s/orm-resarch/xorm"
 )
 
 func main() {
@@ -16,9 +16,15 @@ func main() {
 		Password: "",
 	}
 
-	db, err := xorm.New(ds)
+	// db, err := xorm.New(ds)
+	// if err != nil {
+	// 	fmt.Printf("err: %#v\n", err)
+	// }
+	// xorm.Sample(db)
+	db, err := sqlboiler.New(ds)
 	if err != nil {
 		fmt.Printf("err: %#v\n", err)
 	}
-	xorm.Sample(db)
+	sqlboiler.Sample(db)
+	db.Close()
 }
