@@ -19,6 +19,8 @@ CRUD
 	xorm reverse -s mysql "root:@tcp(localhost:3306)/sakila?charset=utf8" ./goxorm_tmpl ./xorm
 
 ## sqlboiler
+	tomlを用意して以下。-oでoutputディレクトリ指定
+	sqlboiler mysql -o sqlboiler -p sqlboiler_models
 
 ## gorp
 ## gorm

@@ -1,10 +1,91 @@
-hash: f89d26c5e9a3a81dbc1116fb05685c67d131b1795965addf23f354e81c1b2276
-updated: 2017-07-16T16:55:15.907520158+09:00
+hash: a976d803373547124cfe7ce8366469209e8a60efb474750ab385e681ef543186
+updated: 2017-07-25T09:20:18.966462497+09:00
 imports:
+- name: github.com/denisenkom/go-mssqldb
+  version: 83fd6889092585661b9359ccb07795f09349ad3a
+- name: github.com/go-sql-driver/mysql
+  version: 3955978caca48c1658a4bb7a9c6a0f084e326af3
 - name: github.com/go-xorm/builder
   version: c8871c857d2555fbfbd8524f895be5386d3d8836
 - name: github.com/go-xorm/core
   version: e9b7412d750de4920b1c7b3ede5a98fd76d38308
 - name: github.com/go-xorm/xorm
   version: 3c8314e91603f0bfa6a228c1a0fea8a9e298f6d9
-testImports: []
+- name: github.com/lib/pq
+  version: dd1fe2071026ce53f36a39112e645b4d4f5793a4
+  subpackages:
+  - oid
+- name: github.com/nullbio/inflect
+  version: 0563860d9a8cd788af0f5243761d841239d23ab2
+- name: github.com/pkg/errors
+  version: ff09b135c25aae272398c51a07235b90a75aa4f0
+- name: github.com/satori/go.uuid
+  version: 5bf94b69c6b68ee1b541973bb8e1144db23a194b
+- name: github.com/vattle/sqlboiler
+  version: 82e14d2e1acb4e1b6ef2193858820f9bff6f187c
+  subpackages:
+  - bdb
+  - bdb/drivers
+  - boil
+  - queries
+  - queries/qm
+  - randomize
+  - strmangle
+  - types
+- name: golang.org/x/crypto
+  version: 6914964337150723782436d56b3f21610a74ce7b
+  subpackages:
+  - md4
+- name: golang.org/x/net
+  version: ab5485076ff3407ad2d02db054635913f017b0ed
+  subpackages:
+  - context
+- name: gopkg.in/nullbio/null.v6
+  version: 40264a2e6b7972d183906cf17663983c23231c82
+  subpackages:
+  - convert
+testImports:
+- name: github.com/fsnotify/fsnotify
+  version: 4da3e2cfbabc9f751898f250b49f2439785783a1
+- name: github.com/hashicorp/hcl
+  version: 392dba7d905ed5d04a5794ba89f558b27e2ba1ca
+  subpackages:
+  - hcl/ast
+  - hcl/parser
+  - hcl/scanner
+  - hcl/strconv
+  - hcl/token
+  - json/parser
+  - json/scanner
+  - json/token
+- name: github.com/kat-co/vala
+  version: 42e1d8b61f12b4fcadea0c062782e466924a3aaa
+- name: github.com/magiconair/properties
+  version: be5ece7dd465ab0765a9682137865547526d1dfb
+- name: github.com/mitchellh/mapstructure
+  version: d0303fe809921458f417bcf828397a65db30a7e4
+- name: github.com/pelletier/go-toml
+  version: 69d355db5304c0f7f809a2edc054553e7142f016
+- name: github.com/spf13/afero
+  version: 9be650865eab0c12963d8753212f4f9c66cdcf12
+  subpackages:
+  - mem
+- name: github.com/spf13/cast
+  version: acbeb36b902d72a7a4c18e8f3241075e7ab763e4
+- name: github.com/spf13/jwalterweatherman
+  version: 0efa5202c04663c757d84f90f5219c1250baf94f
+- name: github.com/spf13/pflag
+  version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
+- name: github.com/spf13/viper
+  version: 25b30aa063fc18e48662b86996252eabdcf2f0c7
+- name: golang.org/x/sys
+  version: c4489faa6e5ab84c0ef40d6ee878f7a030281f0f
+  subpackages:
+  - unix
+- name: golang.org/x/text
+  version: 836efe42bb4aa16aaa17b9c155d8813d336ed720
+  subpackages:
+  - transform
+  - unicode/norm
+- name: gopkg.in/yaml.v2
+  version: 25c4ec802a7d637f88d584ab26798e94ad14c13b
