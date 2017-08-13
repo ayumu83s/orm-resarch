@@ -36,6 +36,9 @@ func Sample(db *sql.DB) {
 	//searchFilmActorByActorIDWithActor(1)
 	//searchFilmActorByActorIDWithActor2(1)
 	searchFilmActorByActorIDWithActor3(2)
+
+	update()
+	update2(db)
 }
 
 // ID指定で1件引くヤツ
@@ -213,4 +216,32 @@ func searchFilmActorByActorIDWithActor3(id int) {
 			v.Film.Title,
 		)
 	}
+}
+
+// 取得したオブジェクトの値を変えてupdateする
+func update() {
+	film, err := FilmsG(Where("film_id=?", 1)).One()
+	if err != nil {
+		fmt.Println(err)
+	}
+	film.Title = "ACADEMY DINOSAUR2"
+	// UPDATE `film` SET `title`=?,`description`=?,`release_year`=?,`language_id`=?,`original_language_id`=?,`rental_duration`=?,`rental_rate`=?,`length`=?,`replacement_cost`=?,`rating`=?,`special_features`=?,`last_update`=? WHERE `film_id`=?
+	err = film.UpdateG()
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+// SQL叩いてupdate
+func update2(db *sql.DB) {
+	res, err := NewQuery(
+		db,
+		SQL(`
+			UPDATE film SET title = ? WHERE film_id = ?
+		`, "ACADEMY DINOSAUR3", 1),
+	).Exec()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("update2: %+v\n", res)
 }
